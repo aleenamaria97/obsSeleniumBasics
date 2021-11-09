@@ -407,7 +407,7 @@ public class Commands {
               Alert alert=driver.switchTo().alert();
               alert.accept();
           }
-          @Test(priority = 25,enabled = true)
+          @Test(priority = 25,enabled = false)
     public void rightClick() {
               driver.get("http://demo.guru99.com/test/simple_context_menu.html");
               WebElement rightClickButton = driver.findElement(By.xpath("//span[@class='context-menu-one btn btn-neutral']"));
