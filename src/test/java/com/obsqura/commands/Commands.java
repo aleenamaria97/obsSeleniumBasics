@@ -2,6 +2,7 @@ package com.obsqura.commands;
 
 import com.obsqura.utility.ExcelUtility;
 import com.sun.deploy.association.Action;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -12,6 +13,8 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,8 +46,8 @@ public class Commands {
 
     @AfterMethod
     public void tearDown() {
-       // driver.close();
-       // driver.quit();
+        // driver.close();
+        // driver.quit();
     }
 
     @Test(priority = 1, enabled = false)
@@ -343,7 +346,7 @@ public class Commands {
     public void verifyRegistration() throws IOException {
         driver.get("http://demo.guru99.com/test/newtours/register.php");
         ExcelUtility excel = new ExcelUtility();
-        List<String> registerData = excel.getString("/src/main/resources/TestData.xlsx","RegistrationData");
+        List<String> registerData = excel.getString("/src/main/resources/TestData.xlsx", "RegistrationData");
         WebElement firstName = driver.findElement(By.name("firstName"));
         firstName.sendKeys(registerData.get(0));
         WebElement lastName = driver.findElement(By.name("lastName"));
@@ -397,24 +400,77 @@ public class Commands {
             actualUserManagementValue.add(userManagementValue.get(i).getText());
         }
         Assert.assertEquals(actualUserManagementValue, expectedValue, "that option is not present");
-          }
-          @Test(priority = 24,enabled = false)
-    public void verifyDoubleClick(){
-        driver.get("http://demo.guru99.com/test/simple_context_menu.html");
-        WebElement doubleClickButton=driver.findElement(By.xpath("//button[text()='Double-Click Me To See Alert']"));
-              Actions action=new Actions(driver);
-              action.doubleClick(doubleClickButton).build().perform();
-              Alert alert=driver.switchTo().alert();
-              alert.accept();
-          }
-          @Test(priority = 25,enabled = true)
-    public void rightClick() {
-              driver.get("http://demo.guru99.com/test/simple_context_menu.html");
-              WebElement rightClickButton = driver.findElement(By.xpath("//span[@class='context-menu-one btn btn-neutral']"));
-              Actions action = new Actions(driver);
-              action.contextClick(rightClickButton).build().perform();
-          }
+    }
 
-}
+    @Test(priority = 24, enabled = false)
+    public void verifyDoubleClick() {
+        driver.get("http://demo.guru99.com/test/simple_context_menu.html");
+        WebElement doubleClickButton = driver.findElement(By.xpath("//button[text()='Double-Click Me To See Alert']"));
+        Actions action = new Actions(driver);
+        action.doubleClick(doubleClickButton).build().perform();
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+    }
+
+    @Test(priority = 25, enabled = false)
+    public void rightClick() {
+        driver.get("http://demo.guru99.com/test/simple_context_menu.html");
+        WebElement rightClickButton = driver.findElement(By.xpath("//span[@class='context-menu-one btn btn-neutral']"));
+        Actions action = new Actions(driver);
+        action.contextClick(rightClickButton).build().perform();
+    }
+
+    @Test(priority = 26, enabled = false)
+    public void verifyMouseOver() {
+        driver.get("https://demoqa.com/menu/");
+        WebElement mainItem2= driver.findElement(By.xpath("//a[text()='Main Item 2']"));
+        Actions actions=new Actions(driver);
+        actions.moveToElement(mainItem2).build().perform();
+        //actions.moveToElement(mainItem2,50,50).build().perform();
+        //actions.moveByOffset(100,100).build().perform();
+    }
+    @Test(priority = 27,enabled = false)
+    public void verifyDragAndDrop(){
+        driver.get("https://demoqa.com/droppable");
+        WebElement dragMe= driver.findElement(By.xpath("//div[@id='draggable']"));
+        WebElement drop=driver.findElement(By.xpath("//div[@id='droppable']"));
+        Actions actions=new Actions(driver);
+        actions.dragAndDrop(dragMe,drop).build().perform();
+    }
+    @Test(priority = 28,enabled = false)
+    public void verifyDragAndDropByOffset(){
+        driver.get("https://demoqa.com/dragabble");
+        WebElement drag= driver.findElement(By.xpath("//div[@class='drag-box ui-draggable ui-draggable-handle']"));
+        int xOffset=drag.getLocation().getX();
+        int yOffset=drag.getLocation().getY();
+        int x=xOffset-50;
+        int y=yOffset-50;
+        System.out.println(xOffset +"y" +yOffset);
+        Actions actions=new Actions(driver);
+        actions.dragAndDropBy(drag,x,y).build().perform();
+    }
+    @Test(priority = 29,enabled = false)
+    public void verifyClickAndHold(){
+        driver.get("https://demoqa.com/resizable");
+        WebElement resizable= driver.findElement(By.xpath("//div[@id='resizable']//span"));
+        Actions actions=new Actions(driver);
+        actions.clickAndHold(resizable).dragAndDropBy(resizable,300,206).build().perform();
+    }
+    @Test(priority = 30,enabled = true)
+    public void multipleDragAndDrop(){
+        driver.get("https://selenium08.blogspot.com/2020/01/click-and-hold.html");
+        List<WebElement> sort= driver.findElements(By.xpath("//ul[@id='sortable']//li"));
+        Actions actions=new Actions(driver);
+        actions.clickAndHold(sort.get(10)).dragAndDrop(sort.get(10),sort.get(0)).build().perform();
+
+    }
+    @Test(priority = 31,enabled = false)
+    public void verifyScreenShot() throws IOException {
+        driver.get("https://www.google.com");
+        TakesScreenshot takesScreenshot=(TakesScreenshot)driver;
+        File screenShot=takesScreenshot.getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(screenShot,new File("./Screenshots/"+"Test.png"));
+    }
+    }
 
 
