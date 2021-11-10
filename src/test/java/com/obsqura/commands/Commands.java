@@ -342,7 +342,7 @@ public class Commands {
         }
     }
 
-    @Test(priority = 22, enabled = false)
+    @Test(priority = 22, enabled = true)
     public void verifyRegistration() throws IOException {
         driver.get("http://demo.guru99.com/test/newtours/register.php");
         ExcelUtility excel = new ExcelUtility();
@@ -459,9 +459,10 @@ public class Commands {
     @Test(priority = 30,enabled = true)
     public void multipleDragAndDrop(){
         driver.get("https://selenium08.blogspot.com/2020/01/click-and-hold.html");
-        List<WebElement> sort= driver.findElements(By.xpath("//ul[@id='sortable']//li"));
+        WebElement sortA= (WebElement) driver.findElements(By.xpath("///li[@name='A']"));
+        WebElement sortC=driver.findElement(By.xpath("//li[@name='C']"));
         Actions actions=new Actions(driver);
-        actions.clickAndHold(sort.get(10)).dragAndDrop(sort.get(10),sort.get(0)).build().perform();
+        actions.clickAndHold(sortC).dragAndDrop(sortC,sortA).build().perform();
 
     }
     @Test(priority = 31,enabled = false)
