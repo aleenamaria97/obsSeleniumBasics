@@ -495,7 +495,7 @@ public class Commands {
         Assert.assertEquals(actualTitle, expectedTitle, "invalid title");
     }
 
-    @Test(priority = 33, enabled = false)
+    @Test(priority = 33, enabled = true)
     @Deprecated
     public void verifyWaitsInSelenium() {
         driver.get("http://demo.guru99.com/test/newtours/");
