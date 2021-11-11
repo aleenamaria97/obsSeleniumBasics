@@ -8,8 +8,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class Commands {
     WebDriver driver;
@@ -37,15 +41,21 @@ public class Commands {
         }
         driver.manage().window().maximize();
         driver.manage().deleteAllCookies();
+       // driver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
     }
 
     @BeforeMethod
     public void setup() {
         testInitialize("chrome");
-    }
+            }
 
     @AfterMethod
-    public void tearDown() {
+    public void tearDown(ITestResult result) throws IOException {
+        if(ITestResult.FAILURE==result.getStatus()){
+            TakesScreenshot takesScreenshot=(TakesScreenshot)driver;
+            File screenShot=takesScreenshot.getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(screenShot,new File("./Screenshots/"+result.getName()+".png"));
+        }
         // driver.close();
         // driver.quit();
     }
@@ -342,7 +352,7 @@ public class Commands {
         }
     }
 
-    @Test(priority = 22, enabled = true)
+    @Test(priority = 22, enabled = false)
     public void verifyRegistration() throws IOException {
         driver.get("http://demo.guru99.com/test/newtours/register.php");
         ExcelUtility excel = new ExcelUtility();
@@ -456,11 +466,11 @@ public class Commands {
         Actions actions=new Actions(driver);
         actions.clickAndHold(resizable).dragAndDropBy(resizable,300,206).build().perform();
     }
-    @Test(priority = 30,enabled = true)
+    @Test(priority = 30,enabled = false)
     public void multipleDragAndDrop(){
         driver.get("https://selenium08.blogspot.com/2020/01/click-and-hold.html");
-        WebElement sortA= (WebElement) driver.findElements(By.xpath("///li[@name='A']"));
-        WebElement sortC=driver.findElement(By.xpath("//li[@name='C']"));
+        WebElement sortA=  driver.findElement(By.xpath("//li[text()='A']"));
+        WebElement sortC=driver.findElement(By.xpath("//li[text()='C']"));
         Actions actions=new Actions(driver);
         actions.clickAndHold(sortC).dragAndDrop(sortC,sortA).build().perform();
 
@@ -471,6 +481,23 @@ public class Commands {
         TakesScreenshot takesScreenshot=(TakesScreenshot)driver;
         File screenShot=takesScreenshot.getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(screenShot,new File("./Screenshots/"+"Test.png"));
+    }
+    @Test(priority = 32,enabled = false)
+    public void verifyScreenshot(){
+        driver.get("https://www.google.com");
+        String expectedTitle="Google123";
+        String actualTitle= driver.getTitle();
+        Assert.assertEquals(actualTitle,expectedTitle,"invalid title");
+    }
+    @Test(priority = 33,enabled = false)
+    @Deprecated
+    public void verifyWeightsInSelenium(){
+        driver.get("http://demo.guru99.com/test/newtours/");
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        WebElement submit= driver.findElement(By.xpath("//input[@name='submit']"));
+        WebDriverWait wait=new WebDriverWait(driver,10);
+        wait.until(ExpectedConditions.visibilityOf(submit));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//input[@name='submit']")));
     }
     }
 
