@@ -1,7 +1,6 @@
 package com.obsqura.commands;
 
 import com.obsqura.utility.ExcelUtility;
-import com.sun.deploy.association.Action;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,15 +18,14 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Commands {
     WebDriver driver;
 
+    @Deprecated
     public void testInitialize(String browser) {
         if (browser.equalsIgnoreCase("chrome")) {
             System.setProperty("webdriver.chrome.driver", "C:\\Selenium\\driverfiles\\chromedriver.exe");
@@ -41,20 +39,21 @@ public class Commands {
         }
         driver.manage().window().maximize();
         driver.manage().deleteAllCookies();
-       // driver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
     }
 
     @BeforeMethod
     public void setup() {
         testInitialize("chrome");
-            }
+    }
 
     @AfterMethod
     public void tearDown(ITestResult result) throws IOException {
-        if(ITestResult.FAILURE==result.getStatus()){
-            TakesScreenshot takesScreenshot=(TakesScreenshot)driver;
-            File screenShot=takesScreenshot.getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(screenShot,new File("./Screenshots/"+result.getName()+".png"));
+        if (ITestResult.FAILURE == result.getStatus()) {
+            TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+            File screenShot = takesScreenshot.getScreenshotAs(OutputType.FILE);
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            FileUtils.copyFile(screenShot, new File("./Screenshots/" + result.getName() + date + ".png"));
         }
         // driver.close();
         // driver.quit();
@@ -433,72 +432,80 @@ public class Commands {
     @Test(priority = 26, enabled = false)
     public void verifyMouseOver() {
         driver.get("https://demoqa.com/menu/");
-        WebElement mainItem2= driver.findElement(By.xpath("//a[text()='Main Item 2']"));
-        Actions actions=new Actions(driver);
+        WebElement mainItem2 = driver.findElement(By.xpath("//a[text()='Main Item 2']"));
+        Actions actions = new Actions(driver);
         actions.moveToElement(mainItem2).build().perform();
         //actions.moveToElement(mainItem2,50,50).build().perform();
         //actions.moveByOffset(100,100).build().perform();
     }
-    @Test(priority = 27,enabled = false)
-    public void verifyDragAndDrop(){
+
+    @Test(priority = 27, enabled = false)
+    public void verifyDragAndDrop() {
         driver.get("https://demoqa.com/droppable");
-        WebElement dragMe= driver.findElement(By.xpath("//div[@id='draggable']"));
-        WebElement drop=driver.findElement(By.xpath("//div[@id='droppable']"));
-        Actions actions=new Actions(driver);
-        actions.dragAndDrop(dragMe,drop).build().perform();
+        WebElement dragMe = driver.findElement(By.xpath("//div[@id='draggable']"));
+        WebElement drop = driver.findElement(By.xpath("//div[@id='droppable']"));
+        Actions actions = new Actions(driver);
+        actions.dragAndDrop(dragMe, drop).build().perform();
     }
-    @Test(priority = 28,enabled = false)
-    public void verifyDragAndDropByOffset(){
+
+    @Test(priority = 28, enabled = false)
+    public void verifyDragAndDropByOffset() {
         driver.get("https://demoqa.com/dragabble");
-        WebElement drag= driver.findElement(By.xpath("//div[@class='drag-box ui-draggable ui-draggable-handle']"));
-        int xOffset=drag.getLocation().getX();
-        int yOffset=drag.getLocation().getY();
-        int x=xOffset-50;
-        int y=yOffset-50;
-        System.out.println(xOffset +"y" +yOffset);
-        Actions actions=new Actions(driver);
-        actions.dragAndDropBy(drag,x,y).build().perform();
+        WebElement drag = driver.findElement(By.xpath("//div[@class='drag-box ui-draggable ui-draggable-handle']"));
+        int xOffset = drag.getLocation().getX();
+        int yOffset = drag.getLocation().getY();
+        int x = xOffset - 50;
+        int y = yOffset - 50;
+        System.out.println(xOffset + "y" + yOffset);
+        Actions actions = new Actions(driver);
+        actions.dragAndDropBy(drag, x, y).build().perform();
     }
-    @Test(priority = 29,enabled = false)
-    public void verifyClickAndHold(){
+
+    @Test(priority = 29, enabled = false)
+    public void verifyClickAndHold() {
         driver.get("https://demoqa.com/resizable");
-        WebElement resizable= driver.findElement(By.xpath("//div[@id='resizable']//span"));
-        Actions actions=new Actions(driver);
-        actions.clickAndHold(resizable).dragAndDropBy(resizable,300,206).build().perform();
+        WebElement resizable = driver.findElement(By.xpath("//div[@id='resizable']//span"));
+        Actions actions = new Actions(driver);
+        actions.clickAndHold(resizable).dragAndDropBy(resizable, 300, 206).build().perform();
     }
-    @Test(priority = 30,enabled = false)
-    public void multipleDragAndDrop(){
+
+    @Test(priority = 30, enabled = false)
+    public void multipleDragAndDrop() {
         driver.get("https://selenium08.blogspot.com/2020/01/click-and-hold.html");
-        WebElement sortA=  driver.findElement(By.xpath("//li[text()='A']"));
-        WebElement sortC=driver.findElement(By.xpath("//li[text()='C']"));
-        Actions actions=new Actions(driver);
-        actions.clickAndHold(sortC).dragAndDrop(sortC,sortA).build().perform();
+        WebElement sortA = driver.findElement(By.xpath("//li[text()='A']"));
+        WebElement sortC = driver.findElement(By.xpath("//li[text()='C']"));
+        Actions actions = new Actions(driver);
+        actions.clickAndHold(sortC).dragAndDrop(sortC, sortA).build().perform();
 
     }
-    @Test(priority = 31,enabled = false)
+
+    @Test(priority = 31, enabled = false)
     public void verifyScreenShot() throws IOException {
         driver.get("https://www.google.com");
-        TakesScreenshot takesScreenshot=(TakesScreenshot)driver;
-        File screenShot=takesScreenshot.getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(screenShot,new File("./Screenshots/"+"Test.png"));
+        TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+        File screenShot = takesScreenshot.getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(screenShot, new File("./Screenshots/" + "Test.png"));
     }
-    @Test(priority = 32,enabled = false)
-    public void verifyScreenshot(){
+
+    @Test(priority = 32, enabled = false)
+    public void verifyScreenshot() {
         driver.get("https://www.google.com");
-        String expectedTitle="Google123";
-        String actualTitle= driver.getTitle();
-        Assert.assertEquals(actualTitle,expectedTitle,"invalid title");
+        String expectedTitle = "Google123";
+        String actualTitle = driver.getTitle();
+        Assert.assertEquals(actualTitle, expectedTitle, "invalid title");
     }
-    @Test(priority = 33,enabled = false)
+
+    @Test(priority = 33, enabled = false)
     @Deprecated
-    public void verifyWeightsInSelenium(){
+    public void verifyWaitsInSelenium() {
         driver.get("http://demo.guru99.com/test/newtours/");
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        WebElement submit= driver.findElement(By.xpath("//input[@name='submit']"));
-        WebDriverWait wait=new WebDriverWait(driver,10);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);//implicit wait
+        //explicit wait
+        WebElement submit = driver.findElement(By.xpath("//input[@name='submit']"));
+        WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.visibilityOf(submit));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//input[@name='submit']")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='submit']")));
     }
-    }
+}
 
 
