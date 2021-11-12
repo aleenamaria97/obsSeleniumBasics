@@ -512,7 +512,7 @@ public class Commands {
     }
 
     @Test(priority = 34, enabled = false)
-    public void verifyRobertClass() throws AWTException {
+    public void verifyRobotClass() throws AWTException {
         driver.get("http://demowebshop.tricentis.com/register");
         WebElement firstName = driver.findElement(By.id("FirstName"));
         firstName.click();
@@ -525,7 +525,7 @@ public class Commands {
     }
 
     @Test(priority = 35, enabled = false)
-    public void verifyFileUploadUsingRobertClass() throws AWTException {
+    public void verifyFileUploadUsingRobotClass() throws AWTException {
         driver.get("https://www.monsterindia.com/seeker/registration");
         //file path passed as a parameter to string selection
         StringSelection selection = new StringSelection("C:\\Users\\aleena\\Desktop\\Selenium\\hw.txt");
