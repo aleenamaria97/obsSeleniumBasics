@@ -16,10 +16,14 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Commands {
@@ -39,7 +43,7 @@ public class Commands {
         }
         driver.manage().window().maximize();
         driver.manage().deleteAllCookies();
-        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
     }
 
     @BeforeMethod
@@ -355,7 +359,7 @@ public class Commands {
     public void verifyRegistration() throws IOException {
         driver.get("http://demo.guru99.com/test/newtours/register.php");
         ExcelUtility excel = new ExcelUtility();
-        List<String> registerData = excel.getString("/src/main/resources/TestData.xlsx", "RegistrationData");
+        List<String> registerData = excel.readDataFromExcel("/src/main/resources/TestData.xlsx", "RegistrationData");
         WebElement firstName = driver.findElement(By.name("firstName"));
         firstName.sendKeys(registerData.get(0));
         WebElement lastName = driver.findElement(By.name("lastName"));
@@ -495,7 +499,7 @@ public class Commands {
         Assert.assertEquals(actualTitle, expectedTitle, "invalid title");
     }
 
-    @Test(priority = 33, enabled = true)
+    @Test(priority = 33, enabled = false)
     @Deprecated
     public void verifyWaitsInSelenium() {
         driver.get("http://demo.guru99.com/test/newtours/");
@@ -506,6 +510,41 @@ public class Commands {
         wait.until(ExpectedConditions.visibilityOf(submit));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='submit']")));
     }
+
+    @Test(priority = 34, enabled = false)
+    public void verifyRobertClass() throws AWTException {
+        driver.get("http://demowebshop.tricentis.com/register");
+        WebElement firstName = driver.findElement(By.id("FirstName"));
+        firstName.click();
+        Robot robot = new Robot();
+        robot.delay(2000);
+        robot.keyPress(KeyEvent.VK_TAB);
+        robot.delay(2000);
+        robot.keyPress(KeyEvent.VK_TAB);
+
+    }
+
+    @Test(priority = 35, enabled = false)
+    public void verifyFileUploadUsingRobertClass() throws AWTException {
+        driver.get("https://www.monsterindia.com/seeker/registration");
+        //file path passed as a parameter to string selection
+        StringSelection selection = new StringSelection("C:\\Users\\aleena\\Desktop\\Selenium\\hw.txt");
+        //clipboard copy
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+        WebElement chooseCV = driver.findElement(By.xpath("//span[@class='browse-text']"));
+        chooseCV.click();
+        Robot robot = new Robot();
+        robot.delay(2000);
+        //pressing ctrl+v
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_V);
+        //relesing ctrl+v
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+        robot.keyRelease(KeyEvent.VK_V);
+        robot.keyPress(KeyEvent.VK_ENTER);
+        robot.keyRelease(KeyEvent.VK_ENTER);
+    }
 }
+
 
 
